@@ -20,7 +20,7 @@ A simple and user-friendly To-Do List app built with React that allows users to 
 
 ## Live Link
 
-Check out the live demo of the app: [To-Do List App](https://your-live-link-here.com)
+Check out the live demo of the app: [To-Do List App](https://to-do-list-app-saagor16.netlify.app/)
 
 ## Installation
 
