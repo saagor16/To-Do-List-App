@@ -1,11 +1,9 @@
-
-function App() {
-
+const App = () => {
   return (
-    <>
-      To-Do List App
-    </>
-  )
-}
+    <div className="bg-[#061525] w-[100%] h-[100vh] flex justify-center items-center">
+      
+    </div>
+  );
+};
 
-export default App
+export default App;
