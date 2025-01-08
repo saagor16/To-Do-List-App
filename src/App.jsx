@@ -33,6 +33,17 @@ const App = () => {
     setIsEdit(id);
   };
 
+  const toggleStrikethrough = (id) => {
+    setItem(
+      item.map((task) => {
+        if (task.id === id) {
+          return { ...task, isStrikethrough: !task.isStrikethrough };
+        }
+        return task;
+      })
+    );
+  };
+
   const itemsAdded = () => {
     if (!input) {
       alert("Please fill in the input box.");
@@ -49,7 +60,11 @@ const App = () => {
       setInput("");
       setIsEdit(null);
     } else {
-      const inputData = { id: new Date().getTime().toString(), name: input };
+      const inputData = {
+        id: new Date().getTime().toString(),
+        name: input,
+        isStrikethrough: false,
+      };
       setItem([...item, inputData]);
       setInput("");
     }
@@ -97,7 +112,12 @@ const App = () => {
               key={val.id}
               className="flex justify-between items-center bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-all"
             >
-              <h1 className="flex-grow text-white text-lg font-semibold truncate">
+              <h1
+                className={`flex-grow text-lg font-semibold cursor-pointer truncate ${
+                  val.isStrikethrough ? "line-through text-gray-500" : "text-white"
+                }`}
+                onClick={() => toggleStrikethrough(val.id)}
+              >
                 {val.name}
               </h1>
               <div className="flex items-center space-x-3">
