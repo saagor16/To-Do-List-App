@@ -2,56 +2,127 @@ import { useEffect, useState } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import { GrAdd } from "react-icons/gr";
 
-const  localData=()=>{
+const localData = () => {
   let list = localStorage.getItem("data");
-  if(list){
-    return JSON.parse(localStorage.getItem("data"))
-  }
-  else{
+  if (list) {
+    return JSON.parse(localStorage.getItem("data"));
+  } else {
     return [];
   }
-}
+};
 
 const App = () => {
-  const [input, setInput] = useState(" ");
+  const [input, setInput] = useState("");
   const [item, setItem] = useState(localData());
+  const [toggleBtn, setToggleBtn] = useState(true);
+  const [isEdit, setIsEdit] = useState(null);
 
-  const deleteData =(id)=>{
-    const updateItem = item.filter((val,index)=>{
-      return index !== id
-    })
-    setItem(updateItem)
-  }
+  const removeAll = () => {
+    setItem([]);
+  };
 
-  const itemsAdded=()=>{
-    if(!input){
-      alert('pls filled something into input box')
-    }
-    else{
-      setItem([...item,input]);
+  const deleteData = (id) => {
+    const updateItem = item.filter((val) => val.id !== id);
+    setItem(updateItem);
+  };
+
+  const editData = (id) => {
+    let newData = item.find((elem) => elem.id === id);
+    setToggleBtn(false);
+    setInput(newData.name);
+    setIsEdit(id);
+  };
+
+  const itemsAdded = () => {
+    if (!input) {
+      alert("Please fill in the input box.");
+    } else if (input && !toggleBtn) {
+      setItem(
+        item.map((elem) => {
+          if (elem.id === isEdit) {
+            return { ...elem, name: input };
+          }
+          return elem;
+        })
+      );
+      setToggleBtn(true);
+      setInput("");
+      setIsEdit(null);
+    } else {
+      const inputData = { id: new Date().getTime().toString(), name: input };
+      setItem([...item, inputData]);
       setInput("");
     }
-  }
+  };
 
-  useEffect(()=>{
-    localStorage.setItem("data",JSON.stringify(item))
-  },[item])
+  useEffect(() => {
+    localStorage.setItem("data", JSON.stringify(item));
+  }, [item]);
+
   return (
-    <div className="bg-[#061525] w-[100%] h-[100vh] flex flex-col justify-center items-center">
-      <div className="w-[400px] h-[60px] flex">
-        <input type="text" onChange={(e)=>setInput(e.target.value)} className="w-[300px] h[60px] rounded-lg" />
-        <GrAdd onClick={itemsAdded} className="bg-white mt-4 ml-[-2rem] text-[1.3rem]"></GrAdd>
-      </div>
-      <div>
-        {
-          item.map((val,index)=>(
-            <div key={val.index} className="text-white font-semibold bg-[#101298] w-[300px] h-[60px] mt-[2rem] ml-[-6rem] rounded-lg p-4 flex justify-between">
-              <h1>{val}</h1>
-              <AiFillDelete onClick={()=>deleteData(index)}></AiFillDelete>
-              <AiFillEdit className="ml-[-10rem]"></AiFillEdit>
+    <div className="bg-gradient-to-b from-[#0f172a] to-[#1e293b] w-full h-screen flex flex-col items-center">
+      {/* Fixed Header */}
+      <header className="fixed top-0 w-full bg-[#0f172a] z-10 shadow-lg text-center py-4">
+        <h1 className="text-3xl font-bold text-white">To-Do List App</h1>
+      </header>
+
+      {/* Main Content */}
+      <div className="flex flex-col items-center w-full max-w-lg mt-32 px-6">
+        {/* Input and Add/Edit Button */}
+        <div className="flex items-center space-x-2 mb-6 w-full">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="flex-grow px-4 py-3 rounded-lg text-lg font-medium shadow-md bg-gray-900 text-white outline-none placeholder-gray-400"
+            placeholder="Add a new task..."
+          />
+          {toggleBtn ? (
+            <GrAdd
+              onClick={itemsAdded}
+              className="text-white bg-green-600 p-3 rounded-full cursor-pointer shadow-md hover:bg-green-700 transition-all"
+            />
+          ) : (
+            <AiFillEdit
+              onClick={itemsAdded}
+              className="text-white bg-blue-600 p-3 rounded-full cursor-pointer shadow-md hover:bg-blue-700 transition-all"
+            />
+          )}
+        </div>
+
+        {/* Task List with Scroll */}
+        <div className="w-full max-h-[400px] overflow-y-auto space-y-4 scrollbar-thin scrollbar-thumb-gray-700 scrollbar-track-gray-800">
+          {item.map((val) => (
+            <div
+              key={val.id}
+              className="flex justify-between items-center bg-gray-800 p-4 rounded-lg shadow-md hover:shadow-lg transition-all"
+            >
+              <h1 className="flex-grow text-white text-lg font-semibold truncate">
+                {val.name}
+              </h1>
+              <div className="flex items-center space-x-3">
+                <AiFillEdit
+                  className="cursor-pointer text-blue-500 hover:text-blue-600 text-2xl"
+                  onClick={() => editData(val.id)}
+                />
+                <AiFillDelete
+                  className="cursor-pointer text-red-500 hover:text-red-600 text-2xl"
+                  onClick={() => deleteData(val.id)}
+                />
+              </div>
             </div>
-          ))
-        }
+          ))}
+        </div>
+
+        {/* Remove All Button */}
+        {item.length > 0 && (
+          <button
+            onClick={removeAll}
+            className="mt-8 w-full py-3 text-white font-bold bg-red-600 rounded-lg shadow-md hover:bg-red-700 transition-all"
+          >
+            Remove All
+          </button>
+        )}
       </div>
     </div>
   );
