@@ -114,7 +114,9 @@ const App = () => {
             >
               <h1
                 className={`flex-grow text-lg font-semibold cursor-pointer truncate ${
-                  val.isStrikethrough ? "line-through text-gray-500" : "text-white"
+                  val.isStrikethrough
+                    ? "line-through text-gray-500"
+                    : "text-white"
                 }`}
                 onClick={() => toggleStrikethrough(val.id)}
               >
@@ -133,7 +135,6 @@ const App = () => {
             </div>
           ))}
         </div>
-
         {/* Remove All Button */}
         {item.length > 0 && (
           <button
