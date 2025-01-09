@@ -135,6 +135,9 @@ const App = () => {
             </div>
           ))}
         </div>
+
+
+        
         {/* Remove All Button */}
         {item.length > 0 && (
           <button
